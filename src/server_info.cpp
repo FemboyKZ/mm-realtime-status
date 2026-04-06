@@ -13,6 +13,7 @@ ServerInfo::ServerInfo()
 	hostname[0] = '\0';
 	mmVersion[0] = '\0';
 	mapName[0] = '\0';
+	version[0] = '\0';
 	tickrate = 64;
 	secure = false;
 
@@ -53,11 +54,36 @@ void ServerInfo::Cache()
 	// VAC status
 	secure = SteamGameServer_BSecure();
 
+	// Version from steam.inf
+	version[0] = '\0';
+	char steamInfPath[512];
+	snprintf(steamInfPath, sizeof(steamInfPath), "%s/steam.inf", g_SMAPI->GetBaseDir());
+	FILE *f = fopen(steamInfPath, "r");
+	if (f)
+	{
+		char line[256];
+		while (fgets(line, sizeof(line), f))
+		{
+			if (strncmp(line, "PatchVersion=", 13) == 0)
+			{
+				char *val = line + 13;
+				// Trim trailing whitespace/newline
+				char *end = val + strlen(val) - 1;
+				while (end >= val && (*end == '\n' || *end == '\r' || *end == ' '))
+					*end-- = '\0';
+				strncpy(version, val, sizeof(version) - 1);
+				version[sizeof(version) - 1] = '\0';
+				break;
+			}
+		}
+		fclose(f);
+	}
+
 	// Map name
 	UpdateMap();
 
-	META_CONPRINTF("[MM-RTS] Cached: hostname=%s, map=%s, tickrate=%d, secure=%s\n",
-		hostname, mapName, tickrate, secure ? "yes" : "no");
+	META_CONPRINTF("[MM-RTS] Cached: hostname=%s, map=%s, version=%s, tickrate=%d, secure=%s\n",
+		hostname, mapName, version, tickrate, secure ? "yes" : "no");
 }
 
 void ServerInfo::UpdateMap()

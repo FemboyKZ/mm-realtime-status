@@ -7,6 +7,7 @@ struct ServerInfo
 	char mmVersion[64];
 	char osName[16];
 	char mapName[256];
+	char version[64];
 	int tickrate;
 	bool secure;
 

@@ -102,7 +102,7 @@ std::string BuildPayloadJson()
 	json += "{\"server\":{";
 	json += "\"hostname\":\"" + JsonEscape(g_ServerInfo.hostname) + "\",";
 	json += "\"os\":\"" + std::string(g_ServerInfo.osName) + "\",";
-	json += "\"version\":\"\",";
+	json += "\"version\":\"" + JsonEscape(g_ServerInfo.version) + "\",";
 	json += "\"tickrate\":" + std::to_string(g_ServerInfo.tickrate) + ",";
 	json += std::string("\"secure\":") + (g_ServerInfo.secure ? "true" : "false") + ",";
 	json += "\"mm_version\":\"" + JsonEscape(g_ServerInfo.mmVersion) + "\",";
