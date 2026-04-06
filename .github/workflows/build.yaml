@@ -1,0 +1,87 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+
+jobs:
+  build-linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Fetch tags
+        run: git fetch --prune --unshallow --tags
+
+      - name: Make build directory
+        run: mkdir ./build
+
+      - name: Update version
+        if: ${{ inputs.version != 'push' && inputs.version != 'pr' }}
+        run: |
+          sed -i 's/"version": "1.0.0.{{git-shorthash}}"/"version": "${{ inputs.version }}"/' ./plugin-metadata.json
+
+      - name: Build and run Docker image
+        run: |
+          docker build . --file Dockerfile --tag mm-rts-linux-builder
+          docker run -v ./build:/app/build -v ./.git:/app/.git mm-rts-linux-builder
+
+      - name: Archive build
+        uses: actions/upload-artifact@v4
+        with:
+          name: mm-cs2kz-rts-linux
+          path: ./build/package
+
+  build-windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Fetch tags
+        run: git fetch --prune --unshallow --tags
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Clone AMBuild
+        uses: actions/checkout@v4
+        with:
+          repository: alliedmodders/ambuild
+          path: ./ambuild
+
+      - name: Install AMBuild
+        run: python -m pip install ./ambuild
+
+      - name: Make build directory
+        run: mkdir ./build
+
+      - name: Configure AMBuild
+        working-directory: build
+        run: python3 ../configure.py --enable-optimize
+
+      - name: Update version
+        if: ${{ inputs.version != 'push' && inputs.version != 'pr' }}
+        shell: bash
+        run: |
+          sed -i 's/"version": "1.0.0.{{git-shorthash}}"/"version": "${{ inputs.version }}"/' ./plugin-metadata.json
+
+      - name: Run AMBuild
+        working-directory: build
+        run: ambuild
+
+      - name: Archive build
+        uses: actions/upload-artifact@v4
+        with:
+          name: mm-cs2kz-rts-windows
+          path: ./build/package

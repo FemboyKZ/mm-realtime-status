@@ -9,6 +9,12 @@ for sdk_target in MMSPlugin.sdk_targets:
 
   binary.sources += [
     'src/plugin.cpp',
+    'src/globals.cpp',
+    'src/config.cpp',
+    'src/player_manager.cpp',
+    'src/server_info.cpp',
+    'src/http_client.cpp',
+    'src/json_builder.cpp',
   ]
 
   binary.custom = [builder.tools.Protoc(protoc = sdk_target.protoc, sources = [
