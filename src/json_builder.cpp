@@ -129,7 +129,7 @@ std::string BuildPayloadJson()
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
 		const PlayerInfo &player = g_PlayerManager.GetPlayer(i);
-		if (!player.connected || player.isBot)
+		if (!player.connected || !player.inGame || player.isBot)
 			continue;
 
 		if (!firstPlayer) json += ",";

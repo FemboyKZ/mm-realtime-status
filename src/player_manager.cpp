@@ -71,7 +71,7 @@ int PlayerManager::GetHumanPlayerCount() const
 	int count = 0;
 	for (int i = 0; i < MAXPLAYERS; i++)
 	{
-		if (m_players[i].connected && !m_players[i].isBot)
+		if (m_players[i].connected && m_players[i].inGame && !m_players[i].isBot)
 			count++;
 	}
 	return count;
