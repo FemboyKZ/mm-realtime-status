@@ -88,13 +88,8 @@ std::string BuildPayloadJson()
 	int port;
 	ResolveIpPort(ip, sizeof(ip), port);
 
-	// Map name
-	char mapName[256] = "";
-	if (g_pGlobals && g_pGlobals->mapname.ToCStr())
-	{
-		strncpy(mapName, g_pGlobals->mapname.ToCStr(), sizeof(mapName) - 1);
-		mapName[sizeof(mapName) - 1] = '\0';
-	}
+	// Refresh map name each report
+	g_ServerInfo.UpdateMap();
 
 	// Player counts
 	int playerCount = g_PlayerManager.GetHumanPlayerCount();
@@ -114,7 +109,7 @@ std::string BuildPayloadJson()
 	json += "\"cs2kz_loaded\":false,";
 	json += "\"ip\":\"" + JsonEscape(ip) + "\",";
 	json += "\"port\":" + std::to_string(port) + ",";
-	json += "\"map\":\"" + JsonEscape(mapName) + "\",";
+	json += "\"map\":\"" + JsonEscape(g_ServerInfo.mapName) + "\",";
 	json += "\"players\":" + std::to_string(playerCount) + ",";
 	json += "\"max_players\":" + std::to_string(maxPlayers) + ",";
 	json += "\"bot_count\":" + std::to_string(botCount);

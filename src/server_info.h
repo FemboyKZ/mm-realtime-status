@@ -6,11 +6,13 @@ struct ServerInfo
 	char hostname[256];
 	char mmVersion[64];
 	char osName[16];
+	char mapName[256];
 	int tickrate;
 	bool secure;
 
 	ServerInfo();
 	void Cache();
+	void UpdateMap();
 };
 
 extern ServerInfo g_ServerInfo;

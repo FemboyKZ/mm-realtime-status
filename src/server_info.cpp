@@ -12,6 +12,7 @@ ServerInfo::ServerInfo()
 {
 	hostname[0] = '\0';
 	mmVersion[0] = '\0';
+	mapName[0] = '\0';
 	tickrate = 64;
 	secure = false;
 
@@ -52,6 +53,35 @@ void ServerInfo::Cache()
 	// VAC status
 	secure = SteamGameServer_BSecure();
 
-	META_CONPRINTF("[MM-RTS] Cached: hostname=%s, tickrate=%d, secure=%s\n",
-		hostname, tickrate, secure ? "yes" : "no");
+	// Map name
+	UpdateMap();
+
+	META_CONPRINTF("[MM-RTS] Cached: hostname=%s, map=%s, tickrate=%d, secure=%s\n",
+		hostname, mapName, tickrate, secure ? "yes" : "no");
+}
+
+void ServerInfo::UpdateMap()
+{
+	// Use INetworkGameServer::GetMapName() - most reliable in CS2
+	if (g_pNetworkServerService)
+	{
+		INetworkGameServer *pGameServer = g_pNetworkServerService->GetIGameServer();
+		if (pGameServer)
+		{
+			const char *name = pGameServer->GetMapName();
+			if (name && name[0] != '\0')
+			{
+				strncpy(mapName, name, sizeof(mapName) - 1);
+				mapName[sizeof(mapName) - 1] = '\0';
+				return;
+			}
+		}
+	}
+
+	// Fallback: g_pGlobals
+	if (g_pGlobals && g_pGlobals->mapname.ToCStr()[0] != '\0')
+	{
+		strncpy(mapName, g_pGlobals->mapname.ToCStr(), sizeof(mapName) - 1);
+		mapName[sizeof(mapName) - 1] = '\0';
+	}
 }
