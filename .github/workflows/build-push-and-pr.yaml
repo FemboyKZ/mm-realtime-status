@@ -2,8 +2,6 @@ name: Build pushes and pull requests
 
 on:
   push:
-    branches-ignore:
-      - main
     tags-ignore:
       - '**'
   pull_request:
