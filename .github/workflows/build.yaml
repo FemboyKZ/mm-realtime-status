@@ -12,7 +12,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -33,7 +33,7 @@ jobs:
           docker run -v ./build:/app/build -v ./.git:/app/.git mm-rts-linux-builder
 
       - name: Archive build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mm-cs2kz-rts-linux
           path: ./build/package
@@ -42,7 +42,7 @@ jobs:
     name: Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -50,12 +50,12 @@ jobs:
         run: git fetch --prune --unshallow --tags
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Clone AMBuild
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: alliedmodders/ambuild
           path: ./ambuild
@@ -81,7 +81,7 @@ jobs:
         run: ambuild
 
       - name: Archive build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mm-cs2kz-rts-windows
           path: ./build/package
