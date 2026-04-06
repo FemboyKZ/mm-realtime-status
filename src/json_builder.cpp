@@ -95,7 +95,13 @@ std::string BuildPayloadJson()
 	int playerCount = g_PlayerManager.GetHumanPlayerCount();
 	int botCount = g_PlayerManager.GetBotCount();
 	int maxPlayers = 0;
-	if (g_pGlobals)
+	if (g_pNetworkServerService)
+	{
+		INetworkGameServer *pGameServer = g_pNetworkServerService->GetIGameServer();
+		if (pGameServer)
+			maxPlayers = pGameServer->GetMaxClients();
+	}
+	if (maxPlayers <= 0 && g_pGlobals)
 		maxPlayers = g_pGlobals->maxClients;
 
 	// Build server object
