@@ -79,15 +79,15 @@ void PluginConfig::Load()
 	serverPort = 0;
 	interval = 10.0f;
 
-	// Try game directory first: csgo/addons/mm-cs2kz-rts/mm-rts.cfg
+	// Try game directory first: csgo/cfg/mm-cs2kz-rts/mm-rts.cfg
 	char cfgPath[512];
-	snprintf(cfgPath, sizeof(cfgPath), "addons/%s/mm-rts.cfg", PLUGIN_NAME);
+	snprintf(cfgPath, sizeof(cfgPath), "cfg/%s/mm-rts.cfg", PLUGIN_NAME);
 
 	FILE *file = fopen(cfgPath, "r");
 	if (!file)
 	{
 		// Try alternative path
-		snprintf(cfgPath, sizeof(cfgPath), "addons/mm-cs2kz-rts/mm-rts.cfg");
+		snprintf(cfgPath, sizeof(cfgPath), "cfg/mm-cs2kz-rts/mm-rts.cfg");
 		file = fopen(cfgPath, "r");
 	}
 	if (!file)
