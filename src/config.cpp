@@ -79,15 +79,22 @@ void PluginConfig::Load()
 	serverPort = 0;
 	interval = 10.0f;
 
-	// Try game directory first: csgo/cfg/mm-cs2kz-rts/mm-rts.cfg
+	// Build absolute path using Metamod's game base directory
+	const char *baseDir = g_SMAPI->GetBaseDir();
 	char cfgPath[512];
-	snprintf(cfgPath, sizeof(cfgPath), "cfg/%s/mm-rts.cfg", PLUGIN_NAME);
+	snprintf(cfgPath, sizeof(cfgPath), "%s/cfg/%s/mm-rts.cfg", baseDir, PLUGIN_NAME);
 
 	FILE *file = fopen(cfgPath, "r");
 	if (!file)
 	{
-		// Try alternative path
-		snprintf(cfgPath, sizeof(cfgPath), "cfg/mm-cs2kz-rts/mm-rts.cfg");
+		// Try alternative path with hardcoded plugin name
+		snprintf(cfgPath, sizeof(cfgPath), "%s/cfg/mm-cs2kz-rts/mm-rts.cfg", baseDir);
+		file = fopen(cfgPath, "r");
+	}
+	if (!file)
+	{
+		// Try addons path as last resort
+		snprintf(cfgPath, sizeof(cfgPath), "%s/addons/%s/mm-rts.cfg", baseDir, PLUGIN_NAME);
 		file = fopen(cfgPath, "r");
 	}
 	if (!file)
