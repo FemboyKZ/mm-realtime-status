@@ -38,14 +38,6 @@ void ServerInfo::Cache()
 		strncpy(hostname, "unknown", sizeof(hostname));
 	}
 
-	// Tickrate from global vars
-	if (g_pGlobals)
-	{
-		float interval = g_pGlobals->m_flIntervalPerTick;
-		if (interval > 0.0f)
-			tickrate = static_cast<int>(1.0f / interval + 0.5f);
-	}
-
 	// Metamod version
 	int major, minor, plvers, plmin;
 	g_SMAPI->GetApiVersions(major, minor, plvers, plmin);
